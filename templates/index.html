@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agro Bot 🌾</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #E9F3F0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background-color: #1EAC53;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      flex-shrink: 0;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* Layout wrapper */
+    
+    #main {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    /* Sidebar */
+    #sidebar {
+      width: 240px;
+      background-color: #ffffff;
+      border-right: 1px solid #ddd;
+      padding: 15px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #sidebar h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1EAC53;
+      margin-bottom: 12px;
+    }
+    #sidebar p {
+      font-size: 14px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #sidebar li {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 12px; /* more gap */
+      cursor: pointer;
+      color: #333;
+    }
+    #sidebar li:hover {
+      background-color: #E9F3F0;
+    }
+    #credits {
+      font-size: 13px;
+      color: #777;
+      text-align: center;
+      margin-top: auto; /* push to bottom */
+    }
+
+    /* Chat area */
+    #chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #E9F3F0;
+    }
+
+    #chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin: 8px 0;
+      padding: 12px 16px;
+      border-radius: 15px;
+      max-width: 60%;
+      font-size: 15px;
+    }
+    .user {
+      background-color: #1EAC53;
+      color: white;
+      align-self: flex-end;
+      transform: translateX(-5%);
+    }
+    .bot {
+      background-color: #ffffff;
+      color: #333;
+      align-self: flex-start;
+      transform: translateX(5%);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    /* Input */
+    #input-wrapper {
+      padding: 15px;
+      background: #E9F3F0;
+      display: flex;
+      justify-content: center;
+    }
+    #input-container {
+      display: flex;
+      width: 70%;
+      max-width: 700px;
+      background: #fff;
+      border-radius: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #user-input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px 0 0 25px;
+      font-size: 16px;
+      outline: none;
+    }
+    #send-btn {
+      background-color: #FFC107;
+      border: none;
+      padding: 0 20px;
+      border-radius: 0 25px 25px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #send-btn:hover {
+      background-color: #e0a800;
+    }
+    #send-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div style="display:flex; align-items:center;">
+      <h1 style="margin-left:10px;">AgroBot</h1>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+  <div id="main">
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div>
+        <h2>About</h2>
+        <p><strong>AgroBot</strong> is your assistant for exploring <strong>crop prices</strong>, <strong>market trends</strong>, and <strong>farming insights</strong>. Designed to give farmers and analysts quick, clear, and actionable knowledge.</p>
+
+        <h2>Quick Tips</h2>
+        <ul>
+          <li onclick="sendQuick('When should I buy wheat in Pakistan?')">🌾 Best time to buy wheat</li>
+          <li onclick="sendQuick('Which city has the lowest rice price in Pakistan?')">🏙️ Cheapest city for rice</li>
+          <li onclick="sendQuick('Explain MoM inflation')">📊 MoM Inflation explained</li>
+          <li onclick="sendQuick('What are the seasonal price trends of Cotton in Pakistan?')">📅 Cotton seasonal trends</li>
+          <li onclick="sendQuick('Which crop contributed most to inflation last year in Pakistan?')">🌾 Top inflation driver</li>
+        </ul>
+      </div>
+
+      <div id="credits">
+        <h2 style="font-size:16px; color:#1EAC53; margin-bottom:5px;">Credits</h2>
+        <p>Built by Muhammad Hassan</p>
+      </div>
+    </div>
+
+    <!-- Chat area -->
+    <div id="chat-area">
+      <div id="chat-container"></div>
+
+      <!-- Input -->
+      <div id="input-wrapper">
+        <div id="input-container">
+          <input id="user-input" placeholder="Ask me anything..." />
+          <button id="send-btn" onclick="sendMessage()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      let msg = document.getElementById("user-input").value;
+      if (!msg.trim()) return;
+
+      addMessage(msg, "user");
+
+      let res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg})
+      });
+
+      let data = await res.json();
+      addMessage(data.reply, "bot");
+
+      document.getElementById("user-input").value = "";
+    }
+
+    function addMessage(text, sender) {
+      let msgDiv = document.createElement("div");
+      msgDiv.className = "message " + sender;
+
+      // 🟢 Clean text: remove Markdown symbols (*, _, #, `)
+      let cleanText = text
+        .replace(/\*/g, "")   // remove *
+        .replace(/_/g, "")    // remove _
+        .replace(/#/g, "")    // remove #
+        .replace(/`/g, "");   // remove backticks
+
+      msgDiv.textContent = cleanText;
+      document.getElementById("chat-container").appendChild(msgDiv);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      let chat = document.getElementById("chat-container");
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function sendQuick(question) {
+      document.getElementById("user-input").value = question;
+      sendMessage();
+    }
+</script>
+
+</body>
+</html>
